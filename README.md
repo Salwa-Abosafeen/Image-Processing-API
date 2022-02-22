@@ -16,6 +16,8 @@ and image resize process <br/>
 
 # Code Structure
 |-- build<br/>
+|&ensp;|-- models<br/>
+|&ensp;|&ensp;|-- models.js<br/>
 |&ensp;|-- routes<br/>
 |&ensp;|&ensp;|-- api<br/>
 |&ensp;|&ensp;|&ensp;|-- images.js<br/>
@@ -36,6 +38,8 @@ and image resize process <br/>
 |&ensp;|-- thumbnail<br/>
 |-- spec<br/>
 |-- src<br/>
+|&ensp;|-- models<br/>
+|&ensp;|&ensp;|-- models.ts<br/>
 |&ensp;|-- routes<br/>
 |&ensp;|-- api<br/>
 |&ensp;|-- images.ts<br/>
