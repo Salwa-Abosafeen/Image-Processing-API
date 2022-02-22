@@ -1,10 +1,8 @@
 import express, { Request, Response } from 'express';
-import { join } from 'path';
+import path from 'path';
 import sharp from 'sharp';
 
 const imagesRoutes = express.Router();
-
-imagesRoutes.use(express.static("public"));
 
 imagesRoutes.get("/", async (req: Request, res: Response)=> {
     // put the logic of image resizing here
@@ -13,8 +11,11 @@ imagesRoutes.get("/", async (req: Request, res: Response)=> {
     const requestWidth = parseInt((req.query.width as unknown) as string);
     const requestHeight = parseInt((req.query.height as unknown) as string);
 
+    let imagePath = '';
+
     if(res.locals.isFileExists) {
-        return res.status(200).send(`<img src=/\"${res.locals.filename}\" />`)
+        imagePath = path.resolve(`./public/images/thumbnail/${res.locals.filename}.jpg`);
+        return res.status(200).sendFile(imagePath)
     } else {
         // resize image
         const filePath = `./public/images/full/${filename}.jpg`;
@@ -25,9 +26,10 @@ imagesRoutes.get("/", async (req: Request, res: Response)=> {
         // save it to thumbnail folder
         try {
             await fileTransform.toFile(`./public/images/thumbnail/${filename}-${requestWidth}-${requestHeight}.jpg`);
-            return res.status(200).json({message: "Done"});
+            imagePath = path.resolve(`./public/images/thumbnail/${filename}-${requestWidth}-${requestHeight}.jpg`);
+            return res.status(200).sendFile(imagePath);
         } catch(err) {
-            return res.status(400).json({message: `ERROR `});
+            return res.status(400).json({message: `ERROR: can't resize the image`});
         } 
     }
 

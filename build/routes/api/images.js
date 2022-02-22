@@ -44,23 +44,23 @@ var sharp_1 = __importDefault(require("sharp"));
 var imagesRoutes = express_1.default.Router();
 imagesRoutes.use(express_1.default.static("public"));
 imagesRoutes.get("/", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var filename, width, height, filePath, fileTransform, err_1;
+    var filename, requestWidth, requestHeight, filePath, fileTransform, err_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 filename = req.query.filename;
-                width = req.query.width;
-                height = req.query.height;
+                requestWidth = parseInt(req.query.width);
+                requestHeight = parseInt(req.query.height);
                 if (!res.locals.isFileExists) return [3 /*break*/, 1];
                 return [2 /*return*/, res.status(200).send("<img src=/\"".concat(res.locals.filename, "\" />"))];
             case 1:
                 filePath = "./public/images/full/".concat(filename, ".jpg");
                 fileTransform = (0, sharp_1.default)(filePath);
-                fileTransform.resize({ width: 200, height: 200 });
+                fileTransform.resize({ width: requestWidth, height: requestHeight });
                 _a.label = 2;
             case 2:
                 _a.trys.push([2, 4, , 5]);
-                return [4 /*yield*/, fileTransform.toFile("./public/images/thumbnail/".concat(filename, "-").concat(width, "-").concat(height, ".jpg"))];
+                return [4 /*yield*/, fileTransform.toFile("./public/images/thumbnail/".concat(filename, "-").concat(requestWidth, "-").concat(requestHeight, ".jpg"))];
             case 3:
                 _a.sent();
                 return [2 /*return*/, res.status(200).json({ message: "Done" })];

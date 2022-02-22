@@ -34,10 +34,10 @@ export const checkIfImageThumbnailExists = async (req: Request, res: Response, n
 
     if(!check) {
         res.locals.isFileExists = false;
-        res.locals.filename = `${filename}.jpg`;
+        res.locals.filename = `${filename}`;
     } else {
         res.locals.isFileExists = true;
-        res.locals.filename = `${filename}-${width}-${height}.jpg`;
+        res.locals.filename = `${filename}-${width}-${height}`;
     }
 
     return next();
