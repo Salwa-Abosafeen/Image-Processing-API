@@ -39,36 +39,52 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var express_1 = __importDefault(require("express"));
-var sharp_1 = __importDefault(require("sharp"));
-var imagesRoutes = express_1.default.Router();
-imagesRoutes.use(express_1.default.static("public"));
-imagesRoutes.get("/", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var filename, width, height, filePath, fileTransform, err_1;
+exports.checkIfImageThumbnailExists = exports.checkIfImageFullExists = void 0;
+var fs_1 = __importDefault(require("fs"));
+var checkIfImageFullExists = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var filename, check;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                filename = req.query.filename;
+                if (!filename) {
+                    return [2 /*return*/, res.status(403).json({ message: "Missing filename" })];
+                }
+                return [4 /*yield*/, fs_1.default.existsSync("./public/images/full/".concat(filename, ".jpg"))];
+            case 1:
+                check = _a.sent();
+                if (!check) {
+                    return [2 /*return*/, res.status(404).json({ message: "File Not Exists" })];
+                }
+                return [2 /*return*/, next()];
+        }
+    });
+}); };
+exports.checkIfImageFullExists = checkIfImageFullExists;
+var checkIfImageThumbnailExists = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var filename, width, height, check;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 filename = req.query.filename;
                 width = req.query.width;
                 height = req.query.height;
-                if (!res.locals.isFileExists) return [3 /*break*/, 1];
-                return [2 /*return*/, res.status(200).send("<img src=/\"".concat(res.locals.filename, "\" />"))];
+                if (!width || !height) {
+                    return [2 /*return*/, res.status(403).json({ message: "Missing width or height Data" })];
+                }
+                return [4 /*yield*/, fs_1.default.existsSync("./public/images/thumbnail/".concat(filename, "-").concat(width, "-").concat(height, ".jpg"))];
             case 1:
-                filePath = "./public/images/full/".concat(filename, ".jpg");
-                fileTransform = (0, sharp_1.default)(filePath);
-                fileTransform.resize({ width: 200, height: 200 });
-                _a.label = 2;
-            case 2:
-                _a.trys.push([2, 4, , 5]);
-                return [4 /*yield*/, fileTransform.toFile("./public/images/thumbnail/".concat(filename, "-").concat(width, "-").concat(height, ".jpg"))];
-            case 3:
-                _a.sent();
-                return [2 /*return*/, res.status(200).json({ message: "Done" })];
-            case 4:
-                err_1 = _a.sent();
-                return [2 /*return*/, res.status(400).json({ message: "ERROR " })];
-            case 5: return [2 /*return*/];
+                check = _a.sent();
+                if (!check) {
+                    res.locals.isFileExists = false;
+                    res.locals.filename = "".concat(filename, ".jpg");
+                }
+                else {
+                    res.locals.isFileExists = true;
+                    res.locals.filename = "".concat(filename, "-").concat(width, "-").concat(height, ".jpg");
+                }
+                return [2 /*return*/, next()];
         }
     });
-}); });
-exports.default = imagesRoutes;
+}); };
+exports.checkIfImageThumbnailExists = checkIfImageThumbnailExists;
