@@ -77,11 +77,11 @@ var checkIfImageThumbnailExists = function (req, res, next) { return __awaiter(v
                 check = _a.sent();
                 if (!check) {
                     res.locals.isFileExists = false;
-                    res.locals.filename = "".concat(filename, ".jpg");
+                    res.locals.filename = "".concat(filename);
                 }
                 else {
                     res.locals.isFileExists = true;
-                    res.locals.filename = "".concat(filename, "-").concat(width, "-").concat(height, ".jpg");
+                    res.locals.filename = "".concat(filename, "-").concat(width, "-").concat(height);
                 }
                 return [2 /*return*/, next()];
         }

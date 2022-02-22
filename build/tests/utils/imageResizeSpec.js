@@ -35,31 +35,31 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-var express_1 = __importDefault(require("express"));
 var imageResize_1 = require("../../utils/imageResize");
-var imagesRoutes = express_1.default.Router();
-imagesRoutes.get("/", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var requestWidth, requestHeight, imageRes;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                requestWidth = parseInt(req.query.width);
-                requestHeight = parseInt(req.query.height);
-                return [4 /*yield*/, (0, imageResize_1.resizeImage)(res.locals.filename, requestWidth, requestHeight, res.locals.isFileExists)];
-            case 1:
-                imageRes = _a.sent();
-                if (imageRes.status === 200) {
-                    return [2 /*return*/, res.status(200).sendFile(imageRes.path)];
-                }
-                else {
-                    return [2 /*return*/, res.status(400).sendFile(imageRes.error)];
-                }
-                return [2 /*return*/];
-        }
-    });
-}); });
-exports.default = imagesRoutes;
+describe('Test Image Resize Process', function () {
+    it('gets thumbnail image that already exists', function () { return __awaiter(void 0, void 0, void 0, function () {
+        var result;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, (0, imageResize_1.resizeImage)('fjordTest', 200, 200, true)];
+                case 1:
+                    result = _a.sent();
+                    expect(result.status).toBe(200);
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    it('resize image process', function () { return __awaiter(void 0, void 0, void 0, function () {
+        var result;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, (0, imageResize_1.resizeImage)('fjordTest', 400, 200, true)];
+                case 1:
+                    result = _a.sent();
+                    expect(result.status).toBe(200);
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+});

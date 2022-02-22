@@ -39,27 +39,45 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var express_1 = __importDefault(require("express"));
-var imageResize_1 = require("../../utils/imageResize");
-var imagesRoutes = express_1.default.Router();
-imagesRoutes.get("/", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var requestWidth, requestHeight, imageRes;
+exports.resizeImage = void 0;
+var path_1 = __importDefault(require("path"));
+var sharp_1 = __importDefault(require("sharp"));
+var resizeImage = function (filename, width, height, isFileExists) { return __awaiter(void 0, void 0, void 0, function () {
+    var filePath, fileTransform, imagePath, err_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                requestWidth = parseInt(req.query.width);
-                requestHeight = parseInt(req.query.height);
-                return [4 /*yield*/, (0, imageResize_1.resizeImage)(res.locals.filename, requestWidth, requestHeight, res.locals.isFileExists)];
+                filePath = "./public/images/full/".concat(filename, ".jpg");
+                fileTransform = (0, sharp_1.default)(filePath);
+                fileTransform.resize({ width: width, height: height });
+                imagePath = '';
+                if (!isFileExists) return [3 /*break*/, 1];
+                imagePath = path_1.default.resolve("./public/images/thumbnail/".concat(filename, ".jpg"));
+                return [2 /*return*/, {
+                        path: imagePath,
+                        status: 200,
+                        error: ''
+                    }];
             case 1:
-                imageRes = _a.sent();
-                if (imageRes.status === 200) {
-                    return [2 /*return*/, res.status(200).sendFile(imageRes.path)];
-                }
-                else {
-                    return [2 /*return*/, res.status(400).sendFile(imageRes.error)];
-                }
-                return [2 /*return*/];
+                _a.trys.push([1, 3, , 4]);
+                return [4 /*yield*/, fileTransform.toFile("./public/images/thumbnail/".concat(filename, "-").concat(width, "-").concat(height, ".jpg"))];
+            case 2:
+                _a.sent();
+                imagePath = path_1.default.resolve("./public/images/thumbnail/".concat(filename, "-").concat(width, "-").concat(height, ".jpg"));
+                return [2 /*return*/, {
+                        path: imagePath,
+                        status: 200,
+                        error: ''
+                    }];
+            case 3:
+                err_1 = _a.sent();
+                return [2 /*return*/, {
+                        path: '',
+                        status: 400,
+                        error: "ERROR: can't resize the image"
+                    }];
+            case 4: return [2 /*return*/];
         }
     });
-}); });
-exports.default = imagesRoutes;
+}); };
+exports.resizeImage = resizeImage;

@@ -39,27 +39,44 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var express_1 = __importDefault(require("express"));
-var imageResize_1 = require("../../utils/imageResize");
-var imagesRoutes = express_1.default.Router();
-imagesRoutes.get("/", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var requestWidth, requestHeight, imageRes;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                requestWidth = parseInt(req.query.width);
-                requestHeight = parseInt(req.query.height);
-                return [4 /*yield*/, (0, imageResize_1.resizeImage)(res.locals.filename, requestWidth, requestHeight, res.locals.isFileExists)];
-            case 1:
-                imageRes = _a.sent();
-                if (imageRes.status === 200) {
-                    return [2 /*return*/, res.status(200).sendFile(imageRes.path)];
-                }
-                else {
-                    return [2 /*return*/, res.status(400).sendFile(imageRes.error)];
-                }
-                return [2 /*return*/];
-        }
-    });
-}); });
-exports.default = imagesRoutes;
+var supertest_1 = __importDefault(require("supertest"));
+var index_1 = __importDefault(require("../index"));
+var request = (0, supertest_1.default)(index_1.default);
+describe('Test endpoint response', function () {
+    it('gets api/images endpoint', function () { return __awaiter(void 0, void 0, void 0, function () {
+        var response;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, request.get('/api/images?filename=fjord&width=200&height=200')];
+                case 1:
+                    response = _a.sent();
+                    expect(response.status).toBe(200);
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    it('gets api/images throw missing filename error', function () { return __awaiter(void 0, void 0, void 0, function () {
+        var response;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, request.get('/api/images?filename=fffff&width=200&height=200')];
+                case 1:
+                    response = _a.sent();
+                    expect(response.status).toBe(404);
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    it('gets api/images endpoint file not found error', function () { return __awaiter(void 0, void 0, void 0, function () {
+        var response;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, request.get('/api/images?width=200&height=200')];
+                case 1:
+                    response = _a.sent();
+                    expect(response.status).toBe(403);
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+});
